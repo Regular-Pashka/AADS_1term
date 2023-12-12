@@ -69,7 +69,6 @@ do {
             }
             const bEnd = Date.now();
             bTime = bEnd - bStart;
-            console.log(arr);
             console.log(bArr);
             break;
         case "2":
@@ -95,14 +94,11 @@ do {
             console.log(qArr);
             break;
         case "3":
-            console.log("hi");
             const jsArr = JSON.parse(JSON.stringify(arr));
             const jsStart = Date.now();
-            const jsResult = jsArr.foreach(strArr => strArr.sort((a, b) => a - b));
+            const jsResult = jsArr.map(strArr => strArr.sort((a, b) => a - b));
             const jsEnd = Date.now();
             jsTime = jsEnd - jsStart;
-            console.log("hi");
-            console.log(jsArr);
             console.log(jsResult);
             break;
         case "4":
@@ -125,7 +121,8 @@ do {
                 for (let j = 0; j < arr.length; j++) {
                     for (let i = 0; i < arr[j].length; i++) {
                         if (arr[j][i] === searchValue) {
-                            console.log(`Искомое значение ${searchValue} найдено в массиве ${arr}. Это элемент ${j+1}-й строки ${i+1}-ого столбца`);
+                            console.log(`Искомое значение ${searchValue} найдено в массиве. Это элемент ${j+1}-й строки ${i}-ого столбца`);
+                            console.log(arr);
                             marker++;
                             break;
                         }
@@ -157,8 +154,9 @@ do {
                         mid = Math.floor((left + right) / 2);
                         currEl = sortedArrStr[mid];
                         if (currEl === searchValue) {
-                            console.log(`Искомое значение ${searchValue} найдено в массиве ${binArr}. Это элемент ${i+1}-й строки ${mid+1}-ого столбца`);
+                            console.log(`Искомое значение ${searchValue} найдено в массиве. Это элемент ${i+1}-й строки ${mid+1}-ого столбца`);
                             marker++;
+                            console.log(arr);
                             break;
                         } else if (currEl > searchValue) {
                             right = mid - 1;
