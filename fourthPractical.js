@@ -232,14 +232,82 @@ do {
                 // return -1;
             }
             console.log(fibArr);
-            
+            sFibStart = Date.now();
             console.log(fibonacci2DSearch(fibArr, searchValue));
+            sFibEnd = Date.now();
+            sFibTime = sFibEnd - sFibStart;
             break;
         case "4":
+            let interArr = JSON.parse(JSON.stringify(arr));
+            function interpolationSearch(arr, x) {
+                let low = 0;
+                let high = arr.length - 1;
+                let mid;
+                while (arr[low] <= x && arr[high] >= x) {
+                    mid = low + ((x - arr[low]) * (high - low)) / (arr[high] - arr[low]);
+                    if (arr[mid] < x) {
+                        low = mid + 1;
+                    } else if (arr[mid] > x) {
+                        high = mid - 1;
+                    } else {
+                        return mid;
+                    }
+                }
+              
+                if (arr[low] === x) {
+                    return low;
+                } else {
+                    return -1;
+                }
+            }
+            for (let i = 0; i < interArr.length; i++) {
+                interArr[i].sort((a, b) => a - b);
+            }
+            let intResult;
+            let clearStings;
+            sInterStart = Date.now();
+            for (let j = 0; j < interArr.length; j++) {
+                intResult = interpolationSearch(interArr[j], searchValue);
+                if (intResult == -1) {
+                    clearStings++
+                } else {
+                    console.log(`Значение ${searchValue} найдено в ${j+1}й строке ${Math.floor(intResult) + 1} столбца массива`);
+                    console.log(interArr);
+                    break;
+                }
+            }
+            if (clearStings == interArr.length) {
+                console.log("Значение  не найдено в массиве");
+            }
+            sInterEnd = Date.now();
+            sInterTime = sInterEnd - sInterStart;
             break;
         case "5":
+            let innerArr = JSON.parse(JSON.stringify(arr));
+            let strInd;
+            let counter = 0;
+            function innerJSSearch() {
+                for (let i = 0; i < innerArr.length; i++) {
+                    strInd = innerArr[i].indexOf(searchValue);
+                    if (strInd !== -1) {
+                        console.log(`Значение ${searchValue} найдено в ${i+1}й строке ${strInd+1} столбца массива`);
+                        console.log(innerArr);
+                        break;
+                    } else {
+                        counter++;
+                    }
+                }
+                if (counter == innerArr.length) {
+                    console.log("Not found");
+                }
+            }
+            sInnerFuncStart = Date.now();
+            innerJSSearch();
+            sInnerFuncEnd = Date.now();
+            sInnerFuncTime = sInnerFuncEnd - sInnerFuncStart;
             break;
         case "6":
+            alert(`Сравнение времени алгоритмов поиска:\n1. Последовательный поиск - ${sPosTime}ms\n2.Бинарный поиск - ${sBinTime}ms\n3.Fibonacci Search - ${sFibTime}ms\n4.Interpolation search - ${sInterTime}ms\n5.Inner JS Search ${sInnerFuncTime}ms`);
             break;     
     }
 } while (choice !== "7");

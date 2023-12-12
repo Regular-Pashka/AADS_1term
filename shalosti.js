@@ -54,7 +54,7 @@
 // printListRecursion(list);
 
 // console.log(Number('100l'));
-
+let arr = [1, 4, 22, 333, 423, 534, 643, 711, 712, 811];
 let fibArr = JSON.parse(JSON.stringify(arr));
             let fibSequence = [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233];
             function fibonacciSearch(arr) {
