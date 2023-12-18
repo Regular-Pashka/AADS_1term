@@ -1,6 +1,7 @@
 let str = "";
 let choice;
 let substr;
+let bmStart, bmEnd, bmTime, innerStrSearchStart, innerStrSearchEnd, innerStrSearchTime, kmpEnd, kmpStart, kmpTime, linStrSearchEnd, linStrSearchStart, linStrSearchTime;
 function getRandomChar(min, max) {
     const randomCharCode = Math.floor(Math.random()*(max - min) + min);
     return String.fromCharCode(randomCharCode);
@@ -55,10 +56,10 @@ do {
             substr = prompt("Введите искомую подстроку");
             break;
         case "3":
-            let linStrSearchStart = Date.now();
+            linStrSearchStart = Date.now();
             let result = linearStrSearch(str, substr)
-            let linStrSearchEnd = Date.now();
-            let linStrSearchTime = linStrSearchEnd - linStrSearchStart;
+            linStrSearchEnd = Date.now();
+            linStrSearchTime = linStrSearchEnd - linStrSearchStart;
             alert(result);
             break;
         case "4":
@@ -104,10 +105,10 @@ do {
                     return -1;
                 }
             }
-            let kmpStart = Date.now();
+            kmpStart = Date.now();
             let kmpResult = kmpStrSearch(str, substr);
-            let kmpEnd = Date.now();
-            let kmpTime = kmpEnd - kmpStart;
+            kmpEnd = Date.now();
+            kmpTime = kmpEnd - kmpStart;
             if (kmpResult === -1) {
                 alert(`Подстрока ${substr} не найдена в строке ${str}`);
             } else {
@@ -143,10 +144,10 @@ do {
                 }
                 return -1;
             }
-            let bmStart = Date.now();
+            bmStart = Date.now();
             let bmResult = bmSubstrSearch(str, substr);
-            let bmEnd = Date.now();
-            let bmTime = bmEnd - bmStart;
+            bmEnd = Date.now();
+            bmTime = bmEnd - bmStart;
             if (bmResult === -1) {
                 alert(`Подстрока ${substr} не найдена в строке ${str}`);
             } else {
@@ -154,10 +155,10 @@ do {
             };
             break;
         case "6":
-            let innerStrSearchStart = Date.now();
+            innerStrSearchStart = Date.now();
             let innerInd = str.indexOf(substr);
-            let innerStrSearchEnd = Date.now();
-            let innerStrSearchTime = innerStrSearchEnd - innerStrSearchStart;
+            innerStrSearchEnd = Date.now();
+            innerStrSearchTime = innerStrSearchEnd - innerStrSearchStart;
             if (innerInd === -1) {
                 alert(`Подстрока ${substr} не найдена в строке ${str}`);
             } else {
@@ -166,9 +167,34 @@ do {
             
             break;
         case "7":
-            alert(`Сравнение времени алгоритмов поиска:\n1. 1.Поиск подстроки методом последовательного доступа ${linStrSearchTime}\n2.Поиск подстроки методом Кнута-Морриса-Пратта ${kmpTime}\n3.Поиск подстроки упрощенным методом Бойера-Мура ${bmTime}\n4.Поиск подстроки встроенной функцией ${innerStrSearchTime}`);
+            alert(`Сравнение времени алгоритмов поиска:\n1.Поиск подстроки методом последовательного доступа ${linStrSearchTime} ms\n2.Поиск подстроки методом Кнута-Морриса-Пратта ${kmpTime}ms\n3.Поиск подстроки упрощенным методом Бойера-Мура ${bmTime} ms\n4.Поиск подстроки встроенной функцией ${innerStrSearchTime} ms`);
             break;
         case "8":
+            let counter = 0;
+            //Task B : подсчитать количество регулярных слов, содержащих хотя бы две одинаковые буквы. Напечатать все слова, имеющие одну цифру, удалив из таких слов все арифметические знаки.
+            let wordsKit = str.split(/_|\.|,|;|:|\\n|\\t|\!|\?/).filter(word => word !== "");
+            alert(wordsKit);
+            console.log(wordsKit);
+            //подсчитать колво регулярных слов содержащих хотя бы две одинаковые буквы
+            wordsKit.forEach( word => {
+                if (word.match(/^[A-Z]+$/) !== null) { //проверка на все большие лат буквы
+                    let duplicates = {}; //в объект добавляем каждую букву как ключ и считаем количество её появлений как значение.
+                    let letter;
+                    for (let i = 0; i < word.length; i++) {
+                        letter = word[i];
+                        if (duplicates[letter]) {
+                            duplicates[letter]++;
+                        } else {
+                            duplicates[letter] = 1;
+                        }
+                        if (duplicates[letter] >= 2) {
+                            counter++;
+                            break;
+                        }
+                    }
+                };
+            });
+            console.log(`Количество регулярных слов с хотя бы двумя равными буквами: ${counter}`);
             break;
     }
 } while (choice !== "9")
