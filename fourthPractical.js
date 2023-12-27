@@ -46,6 +46,8 @@ function fillArr() {
             }
             break;
     }
+    alert(arr);
+    console.log(arr);
 }
 fillArr();
 
@@ -121,7 +123,7 @@ do {
                 for (let j = 0; j < arr.length; j++) {
                     for (let i = 0; i < arr[j].length; i++) {
                         if (arr[j][i] === searchValue) {
-                            console.log(`Искомое значение ${searchValue} найдено в массиве. Это элемент ${j+1}-й строки ${i}-ого столбца`);
+                            console.log(`LIN: Искомое значение ${searchValue} найдено в массиве. Это элемент ${j+1}-й строки ${i+1}-ого столбца`);
                             console.log(arr);
                             marker++;
                             break;
@@ -132,7 +134,7 @@ do {
                     }
                 }
                 if (marker == 0) {
-                    console.log(`Искомое значение ${searchValue} не найдено в массиве ${arr}.`)
+                    console.log(`LIN: Искомое значение ${searchValue} не найдено в массиве ${arr}.`)
                 }
             }
             sPosStart = Date.now();
@@ -154,9 +156,9 @@ do {
                         mid = Math.floor((left + right) / 2);
                         currEl = sortedArrStr[mid];
                         if (currEl === searchValue) {
-                            console.log(`Искомое значение ${searchValue} найдено в массиве. Это элемент ${i+1}-й строки ${mid+1}-ого столбца`);
+                            console.log(`BIN: Бинарный алгоритм поиска работает в отсортированном массиве, поэтому изначальный массив сортируется последовательно по строкам и значение ищется уже в отсортированном массиве. Искомое значение ${searchValue} найдено в массиве. Это элемент ${i+1}-й строки ${mid+1}-ого столбца`);
                             marker++;
-                            console.log(arr);
+                            console.log(binArr); //строки сортируются последовательно
                             break;
                         } else if (currEl > searchValue) {
                             right = mid - 1;
@@ -169,7 +171,7 @@ do {
                     }
                 }
                 if (marker == 0) {
-                    console.log(`Искомое значение ${searchValue} не найдено в массиве ${binArr}.`)
+                    console.log(`BIN:Искомое значение ${searchValue} не найдено в массиве ${binArr}.`)
                 }
             }
             sBinStart = Date.now();
@@ -206,7 +208,7 @@ do {
                             fibMMm2 = fibM - fibMMm1;
                         }
                         else {
-                            return `Элемент найден в ${i+1}й строке ${ind+1} столбце`;
+                            return `FIB: Элемент найден в ${i+1}й строке ${ind+1} столбце`;
                         }
                     }
                     if(fibMMm1 && sortedArrStr[offset+1]==x) return offset+1;
@@ -215,43 +217,30 @@ do {
                 if (clearStrings == fibArr.length) {
                     return `В заданном двумерном массиве отстутствует данное число`;
                 }
-                //цикл прохода по основному массиву
-                // for (let i = 0; i < array.length; i++) {
-                //     let sortedArrStr = array[i].sort((a, b) => a - b);
-                //     for (let j = 0; j < array[i].length; i++) {
-                //         if (array[i][fibSequence[j]] > searchValue) {
-                //             return fibonacciSearch(array[i].slice(j-1, j))
-                //         } else if (array[i][fibSequence[j]] == searchValue) {
-                //             console.log(fibArr);
-                //             return `Искомое значение ${searchValue} найдено в массиве. Это элемент ${i+1}-й строки ${j+1}-ого столбца`;
-                //         }     
-                //     }
-                // }
-                // return -1;
             }
-            console.log(fibArr);
             sFibStart = Date.now();
             console.log(fibonacci2DSearch(fibArr, searchValue));
             sFibEnd = Date.now();
+            console.log(fibArr);
             sFibTime = sFibEnd - sFibStart;
             break;
-        case "4":
+        case "4": //доработать, нужно чтобы искал все такие значения и писал где они. Т.е. относительно найденного значения посмотреть значения слева и справа, если они равны, то и их индексы в том числе вывести. Идея: через цикл выводить сообщение о том, найдено ли или нет
             let interArr = JSON.parse(JSON.stringify(arr));
             function interpolationSearch(arr, x) {
                 let low = 0;
-                let high = arr.length - 1;
+                let high = arr.length - 1; 
                 let mid;
                 while (arr[low] <= x && arr[high] >= x) {
                     mid = low + ((x - arr[low]) * (high - low)) / (arr[high] - arr[low]);
+                    mid = Math.floor(mid);
                     if (arr[mid] < x) {
                         low = mid + 1;
                     } else if (arr[mid] > x) {
                         high = mid - 1;
                     } else {
-                        return mid;
+                        return mid; //MAth floor napisat
                     }
                 }
-              
                 if (arr[low] === x) {
                     return low;
                 } else {
@@ -262,19 +251,32 @@ do {
                 interArr[i].sort((a, b) => a - b);
             }
             let intResult;
-            let clearStings;
+            let clearStings = 0;
+            let strings = [];
+            let colums = [];
             sInterStart = Date.now();
             for (let j = 0; j < interArr.length; j++) {
                 intResult = interpolationSearch(interArr[j], searchValue);
                 if (intResult == -1) {
-                    clearStings++
+                    clearStings++;
                 } else {
-                    console.log(`Значение ${searchValue} найдено в ${j+1}й строке ${Math.floor(intResult) + 1} столбца массива`);
-                    console.log(interArr);
-                    break;
+                    strings.push(j+1);
+                    colums.push(intResult+1);
+                    for (let i = intResult-1; i > 0; i--) {
+                        if (interArr[j][intResult] == interArr[j][i]) {
+                            colums.push(i+1);
+                        }
+                    }
+                    for (let i = intResult+1; i < interArr[j].length; i++) {
+                        if (interArr[j][intResult] == interArr[j][i]) {
+                            colums.push(i+1);
+                        }
+                    }
                 }
             }
-            if (clearStings == interArr.length) {
+            console.log(`INTER: Значение ${searchValue} найдено в ${strings} строках ${colums} столбцов массива`); // math floor поменял на round
+            console.log(interArr);
+            if (clearStings === interArr.length) {
                 console.log("Значение  не найдено в массиве");
             }
             sInterEnd = Date.now();
@@ -288,7 +290,7 @@ do {
                 for (let i = 0; i < innerArr.length; i++) {
                     strInd = innerArr[i].indexOf(searchValue);
                     if (strInd !== -1) {
-                        console.log(`Значение ${searchValue} найдено в ${i+1}й строке ${strInd+1} столбца массива`);
+                        console.log(`INNERJS: Значение ${searchValue} найдено в ${i+1}й строке ${strInd+1} столбца массива`);
                         console.log(innerArr);
                         break;
                     } else {
@@ -344,4 +346,3 @@ function countSortedStrings() {
     //     typeOfFill = prompt("How you would like to fill an array: by yourself(1) or random(2): ");
     //     if (typeOfFill !== "1" && typeOfFill !== "2")
     //         alert("Error: input must be 1 or 2");
-    // 

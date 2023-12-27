@@ -31,20 +31,6 @@ function strFill(someStr) {
         return someStr;
     }
 }
-function linearStrSearch(str, substr) {
-    if (substr.length > str.length) return -1;
-    let potentialSubstr;
-    for (let i = 0; i < str.length - substr.length; i++) {
-        potentialSubstr = "";
-        for (let j = 0; j < substr.length; j++) {
-            potentialSubstr += str[i+j];
-        }
-        if (potentialSubstr === substr) {
-            return `Значение ${substr} в строке ${str} найдено. Это подстрока начинается с индекса ${i} до ${i + (substr.length - 1)} включительно`;
-        }
-    }
-    return `Подстрока ${substr} в строке ${str} не найденa`
-}
 do {
     choice = prompt("Меню\n1.Заполнить строку.\n2.Вывести строку на экран\n3.Поиск подстроки методом последовательного доступа\n4.Поиск подстроки методом Кнута-Морриса-Пратта\n5.Поиск подстроки упрощенным методом Бойера-Мура.\n6.Поиск подстроки встроенной функцией.\n7.Сравнение времени работы методов.\n8.Решение задачи уровня В\n9.Exit");
     switch (choice) {
@@ -56,6 +42,24 @@ do {
             substr = prompt("Введите искомую подстроку");
             break;
         case "3":
+            let linIndxs = [];
+            function linearStrSearch(str, substr) {
+                if (substr.length > str.length) return -1;
+                let potentialSubstr;
+                for (let i = 0; i < str.length - substr.length; i++) {
+                    potentialSubstr = "";
+                    for (let j = 0; j < substr.length; j++) {
+                        potentialSubstr += str[i+j];
+                    }
+                    if (potentialSubstr === substr) {
+                        linIndxs.push(i);
+                    }
+                }
+                if (linIndxs.length == 0) {
+                    return `Подстрока ${substr} в строке ${str} не найденa`;
+                }
+                return `Подстрока ${substr} в строке ${str} найденa начинай с индексов ${linIndxs}`;
+            }    
             linStrSearchStart = Date.now();
             let result = linearStrSearch(str, substr)
             linStrSearchEnd = Date.now();
@@ -84,6 +88,7 @@ do {
                 return p;
             }
             const kmpStrSearch = (str, searchString) => {
+                const kmpIndxs = [];
                 const searchStringPrefix = prefix(searchString);
                 let i = 0, j = 0;
                 while (i < str.length) {
@@ -91,7 +96,7 @@ do {
                         j++;
                         i++;
                         if (j === searchString.length) {
-                            return (i - searchString.length);
+                            kmpIndxs.push(i - searchString.length);
                         }
                     } else {
                         if (j > 0) {
@@ -101,9 +106,10 @@ do {
                         }
                     }
                 }
-                if (i === str.length && j !== searchString.length) {
+                if (kmpIndxs.length == 0) {//i === str.length && j !== searchString.length) {
                     return -1;
                 }
+                return kmpIndxs;
             }
             kmpStart = Date.now();
             let kmpResult = kmpStrSearch(str, substr);
@@ -112,11 +118,12 @@ do {
             if (kmpResult === -1) {
                 alert(`Подстрока ${substr} не найдена в строке ${str}`);
             } else {
-                alert(`Подстрока ${substr} найдена в строке ${str} начиная с индекса ${kmpResult}`);
+                alert(`Подстрока ${substr} найдена в строке ${str} начиная с индексов ${kmpResult}`);
             };
             break;
         case "5":
             function bmSubstrSearch(str, substr) {
+                const bmIndxs = [];
                 const strLength = str.length;
                 const substrLength = substr.length;
                 if (substrLength === 0) {
@@ -132,7 +139,7 @@ do {
                 while (i < strLength) {
                     if (str[i] === substr[j]) {
                         if (j === 0) {
-                            return i;
+                            bmIndxs.push(i);
                         }
                         i--;
                         j--;
@@ -142,7 +149,12 @@ do {
                         j = substrLength - 1;
                     }
                 }
-                return -1;
+                if (bmIndxs.length == 0) {
+                    return -1;    
+                } else {
+                    return bmIndxs;
+                }
+                
             }
             bmStart = Date.now();
             let bmResult = bmSubstrSearch(str, substr);
@@ -155,14 +167,19 @@ do {
             };
             break;
         case "6":
+            let innerIndxs = [];
             innerStrSearchStart = Date.now();
             let innerInd = str.indexOf(substr);
+            while (innerInd !== -1) {
+                innerIndxs.push(innerInd);
+                innerInd = str.indexOf(substr, innerInd + 1);
+            }
             innerStrSearchEnd = Date.now();
             innerStrSearchTime = innerStrSearchEnd - innerStrSearchStart;
-            if (innerInd === -1) {
+            if (innerIndxs.length === 0) {
                 alert(`Подстрока ${substr} не найдена в строке ${str}`);
             } else {
-                alert(`Подстрока ${substr} найдена в строке ${str} начиная с индекса ${innerInd}`);
+                alert(`Подстрока ${substr} найдена в строке ${str} начиная с индексов ${innerIndxs}`);
             };
             
             break;
@@ -175,7 +192,7 @@ do {
             let wordsKit = str.split(/_|\.|,|;|:|\\n|\\t|\!|\?/).filter(word => word !== "");
             alert(wordsKit);
             console.log(wordsKit);
-            //подсчитать колво регулярных слов содержащих хотя бы две одинаковые буквы
+            //подсчитать кол-во регулярных слов содержащих хотя бы две одинаковые буквы
             wordsKit.forEach( word => {
                 if (word.match(/^[A-Z]+$/) !== null) { //проверка на все большие лат буквы
                     let duplicates = {}; //в объект добавляем каждую букву как ключ и считаем количество её появлений как значение.
@@ -194,9 +211,15 @@ do {
                     }
                 };
             });
+            let oneDigWordsKit = wordsKit.filter( word => word.match(/^\D*\d\D*$/));
+            for (let i = 0; i < oneDigWordsKit.length; i++) {
+                oneDigWordsKit[i] = oneDigWordsKit[i].replace(/\+|-|\*|\//g, ""); 
+            }
+            console.log(oneDigWordsKit);
             console.log(`Количество регулярных слов с хотя бы двумя равными буквами: ${counter}`);
             break;
     }
 } while (choice !== "9")
 
 //Задачи: переменные времени объявить глобально в начале файла. Сделать задание В.
+//обновление задание B доделать и дополнить все вхождения в поисках элементов, т.е. если у нас буква свстречается много раз, нужно написать с каких индексов она встречается все разы.
